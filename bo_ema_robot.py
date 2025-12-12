@@ -2,6 +2,7 @@
 # File: live_chart_mt5_ema_bo_full_v2.py
 # EMA20/50 Crossover + Binary Option Signals + Live Chart
 # One-row-per-candle logging (open,high,low,close,tick_volume,real_volume,spread)
+# Signals renamed: BUY (was CALL) and SELL (was PUT)
 # ============================================================
 
 import MetaTrader5 as mt5
@@ -102,7 +103,7 @@ def save_live_data_latest(df):
 def get_signals(df):
     """
     Use EMA20/EMA50, Pullback, Breakout, Reversal logic on the dataframe.
-    Returns 'CALL' or 'PUT' or None based on the most recent *completed* candle.
+    Returns 'BUY' or 'SELL' or None based on the most recent *completed* candle.
     """
     if df is None or len(df) < 6:
         return None
@@ -114,21 +115,24 @@ def get_signals(df):
     df["Trend"] = np.where(df['EMA20'] > df['EMA50'], "UP",
                    np.where(df['EMA20'] < df['EMA50'], "DOWN", "NEUTRAL"))
 
+    # Pullback: in an UP trend if close < EMA20 => BUY; in DOWN trend if close > EMA20 => SELL
     df["Pullback"] = np.where(
-        (df["Trend"]=="UP") & (df["close"] < df["EMA20"]), "CALL",
-        np.where((df["Trend"]=="DOWN") & (df["close"] > df["EMA20"]), "PUT", None)
+        (df["Trend"]=="UP") & (df["close"] < df["EMA20"]), "BUY",
+        np.where((df["Trend"]=="DOWN") & (df["close"] > df["EMA20"]), "SELL", None)
     )
 
+    # Breakout from 5-candle swing
     df["SwingHigh"] = df["high"].rolling(5).max()
     df["SwingLow"] = df["low"].rolling(5).min()
     df["Breakout"] = np.where(
-        df["close"] > df["SwingHigh"].shift(1), "CALL",
-        np.where(df["close"] < df["SwingLow"].shift(1), "PUT", None)
+        df["close"] > df["SwingHigh"].shift(1), "BUY",
+        np.where(df["close"] < df["SwingLow"].shift(1), "SELL", None)
     )
 
+    # Reversal based on EMA cross (previous vs current)
     df["Reversal"] = np.where(
-        (df["EMA20"].shift(1) < df["EMA50"].shift(1)) & (df["EMA20"] > df["EMA50"]), "CALL",
-        np.where((df["EMA20"].shift(1) > df["EMA50"].shift(1)) & (df["EMA20"] < df["EMA50"]), "PUT", None)
+        (df["EMA20"].shift(1) < df["EMA50"].shift(1)) & (df["EMA20"] > df["EMA50"]), "BUY",
+        np.where((df["EMA20"].shift(1) > df["EMA50"].shift(1)) & (df["EMA20"] < df["EMA50"]), "SELL", None)
     )
 
     # Check the last **closed** candle (index -2). The last row (-1) is the forming candle.
@@ -182,10 +186,12 @@ def place_bo_trade(signal, entry_price, candle_ts):
 
 def finish_trade(signal, entry_price, expiry_time):
     try:
+        # For BUY we compare using bid as close price (we captured entry using ask)
+        # For SELL we compare using ask as close price (we captured entry using bid)
         tick = mt5.symbol_info_tick(SYMBOL)
-        close_price = tick.bid if signal == "CALL" else tick.ask
+        close_price = tick.bid if signal == "BUY" else tick.ask
 
-        win = (close_price > entry_price) if signal == "CALL" else (close_price < entry_price)
+        win = (close_price > entry_price) if signal == "BUY" else (close_price < entry_price)
         profit = STAKE * PAYOUT if win else -STAKE
 
         with trades_lock:
@@ -244,7 +250,7 @@ def plot_candles(df_all, trades_snapshot):
         for _, row in trades_snapshot.iterrows():
             try:
                 t_num = mdates.date2num(row['time'])
-                if row['signal'] == "CALL":
+                if row['signal'] == "BUY":
                     # place slightly below candle low if possible
                     # find matching candle low by nearest time in df_plot
                     nearest = df_plot.iloc[(df_plot['time_dt'] - pd.to_datetime(row['time'])).abs().argsort()[:1]]
@@ -297,7 +303,7 @@ try:
 
         if signal and closed_candle_ts is not None:
             tick = mt5.symbol_info_tick(SYMBOL)
-            entry_price = tick.ask if signal == "CALL" else tick.bid
+            entry_price = tick.ask if signal == "BUY" else tick.bid
             # place trade only once for that closed candle
             placed = place_bo_trade(signal, entry_price, closed_candle_ts)
             # placed == True means we just registered a trade; otherwise ignored as duplicate
