@@ -207,7 +207,7 @@ def plot_candles(df_all, trades_snapshot):
     width = (time_diffs.median() if not time_diffs.empty else 0.0005) * 0.6
 
     candlestick_ohlc(ax, ohlc, width=width, colorup='green', colordown='red', alpha=0.9)
-
+  
     df_plot['EMA20'] = df_plot['close'].ewm(span=20, adjust=False).mean()
     df_plot['EMA50'] = df_plot['close'].ewm(span=50, adjust=False).mean()
     ax.plot(df_plot['time_num'], df_plot['EMA20'], color='blue', linewidth=1, label='EMA20')
