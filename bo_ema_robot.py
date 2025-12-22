@@ -6,7 +6,7 @@
 import MetaTrader5 as mt5
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta 
 import time
 import threading
 import matplotlib.pyplot as plt
@@ -23,7 +23,7 @@ TIMEFRAME = mt5.TIMEFRAME_M1
 
 STAKE = 10
 PAYOUT = 0.8
-EXPIRY_MINUTES = 1
+EXPIRY_MINUTES = 2
 
 LIVE_DATA_LOG = "live_data.csv"
 TRADE_LOG = "bo_trades.csv"
@@ -152,7 +152,7 @@ def plot_candles(df_all, trades_snapshot):
 
     # Plot trades
     if not trades_snapshot.empty:
-        for _, row in trades_snapshot.iterrows():
+        for _, row in trades_snapshot.iterrows(): 
             t_num = mdates.date2num(row['time'])
             try:
                 if row['signal']=="BUY":
