@@ -1,12 +1,13 @@
 # ============================================================
 # File: bo_ema_robot.py
-# EMA20/50 Binary Option Robot (Live MT5 + Signals from indicator.py)
+# EMA20/50 Scalper Binary Option Robot (Live MT5 + Signals)
+# Tick-based expiry result (scalper style)
 # ============================================================
 
 import MetaTrader5 as mt5
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta 
+from datetime import datetime, timedelta
 import time
 import threading
 import matplotlib.pyplot as plt
@@ -14,7 +15,6 @@ import matplotlib.dates as mdates
 from mplfinance.original_flavor import candlestick_ohlc
 import os
 
-# Import signal engine
 from indicator import get_ema_signal
 
 # ===================== CONFIG =======================
@@ -23,34 +23,33 @@ TIMEFRAME = mt5.TIMEFRAME_M1
 
 STAKE = 10
 PAYOUT = 0.8
-EXPIRY_MINUTES = 2
+EXPIRY_MINUTES = 1  # scalper: short expiry
 
 LIVE_DATA_LOG = "live_data.csv"
 TRADE_LOG = "bo_trades.csv"
 
 PLOT_CANDLES = 80
-LOOP_SLEEP = 0.25
+LOOP_SLEEP = 0.2
 CANDLE_FETCH = 200
 
 # ===================== MT5 INIT ======================
 if not mt5.initialize():
-    raise SystemExit("MT5 initialize() failed. Make sure MT5 is running and logged in.")
+    raise SystemExit("MT5 initialize() failed")
 acct = mt5.account_info()
 print("Logged in:", acct.login)
 
-# ===================== GLOBALS & FILE INIT =============
+# ===================== GLOBALS =======================
 trades_df = pd.DataFrame(columns=['time','signal','entry','close','profit','expiry'])
 trades_lock = threading.Lock()
-
 _last_saved_candle_ts = None
 _last_traded_candle_ts = None
 _trade_in_progress = False
 
-if not os.path.exists(TRADE_LOG):
-    pd.DataFrame(columns=['time','signal','entry','close','profit','expiry']).to_csv(TRADE_LOG, index=False)
-
-if not os.path.exists(LIVE_DATA_LOG):
-    pd.DataFrame(columns=['time','open','high','low','close','tick_volume','real_volume','spread']).to_csv(LIVE_DATA_LOG, index=False)
+# Create files if missing
+for file, cols in [(TRADE_LOG, trades_df.columns), 
+                   (LIVE_DATA_LOG, ['time','open','high','low','close','tick_volume','real_volume','spread'])]:
+    if not os.path.exists(file):
+        pd.DataFrame(columns=cols).to_csv(file, index=False)
 
 # ===================== UTILITIES =======================
 def save_live_data_latest(df):
@@ -80,6 +79,7 @@ def save_live_data_latest(df):
 
 # ===================== TRADE HANDLER ===================
 def place_bo_trade(signal, entry_price, candle_ts):
+    """Open trade and schedule resolution after EXPIRY_MINUTES"""
     global _last_traded_candle_ts, _trade_in_progress
     if _trade_in_progress or candle_ts == _last_traded_candle_ts:
         return False
@@ -87,6 +87,7 @@ def place_bo_trade(signal, entry_price, candle_ts):
     _trade_in_progress = True
     _last_traded_candle_ts = candle_ts
     expiry_time = datetime.now() + timedelta(minutes=EXPIRY_MINUTES)
+
     print(f"[{datetime.now().strftime('%H:%M:%S')}] TRADE OPENED: {signal} | ENTRY: {entry_price:.5f} | EXPIRY: {expiry_time.strftime('%H:%M:%S')}")
 
     provisional = {'time': datetime.now(), 'signal': signal, 'entry': entry_price,
@@ -95,16 +96,23 @@ def place_bo_trade(signal, entry_price, candle_ts):
     with trades_lock:
         trades_df.loc[len(trades_df)] = provisional
 
+    # Schedule trade resolution at expiry
     t = threading.Timer(EXPIRY_MINUTES*60, finish_trade, args=(signal, entry_price, expiry_time))
     t.daemon = True
     t.start()
     return True
 
 def finish_trade(signal, entry_price, expiry_time):
+    """Resolve trade using tick-based price (scalper behavior)"""
     global _trade_in_progress
     try:
         tick = mt5.symbol_info_tick(SYMBOL)
-        close_price = tick.bid if signal=="BUY" else tick.ask
+        if tick is None:
+            close_price = entry_price
+        else:
+            close_price = tick.bid if signal=="BUY" else tick.ask
+
+        # Determine win/loss immediately
         win = (close_price > entry_price) if signal=="BUY" else (close_price < entry_price)
         profit = STAKE * PAYOUT if win else -STAKE
 
@@ -116,6 +124,7 @@ def finish_trade(signal, entry_price, expiry_time):
                 trades_df.at[idx, 'profit'] = profit
                 trades_df.at[idx, 'expiry'] = expiry_time
 
+        # Log trade
         pd.DataFrame([{
             'time': datetime.now(), 'signal': signal,
             'entry': entry_price, 'close': close_price,
@@ -129,7 +138,7 @@ def finish_trade(signal, entry_price, expiry_time):
     finally:
         _trade_in_progress = False
 
-# ===================== PLOT ===========================
+# ===================== PLOT =========================
 plt.ion()
 fig, ax = plt.subplots(figsize=(12,6))
 
@@ -144,26 +153,27 @@ def plot_candles(df_all, trades_snapshot):
     width = (df_plot['time_num'].diff().median() if not df_plot['time_num'].diff().empty else 0.0005) * 0.6
     candlestick_ohlc(ax, ohlc, width=width, colorup='green', colordown='red', alpha=0.9)
 
-    # Plot EMAs
+    # EMAs
     df_plot['EMA20'] = df_plot['close'].ewm(span=20, adjust=False).mean()
     df_plot['EMA50'] = df_plot['close'].ewm(span=50, adjust=False).mean()
     ax.plot(df_plot['time_num'], df_plot['EMA20'], color='blue', linewidth=1)
     ax.plot(df_plot['time_num'], df_plot['EMA50'], color='red', linewidth=1)
 
-    # Plot trades
+    # Trades
     if not trades_snapshot.empty:
-        for _, row in trades_snapshot.iterrows(): 
-            t_num = mdates.date2num(row['time'])
-            try:
-                if row['signal']=="BUY":
-                    low = df_plot.iloc[(df_plot['time_dt']-pd.to_datetime(row['time'])).abs().argsort()[:1]]['low'].values[0]
-                    ax.scatter(t_num, low-(low*0.00015), marker='^', s=120, color='#3A7DFF', zorder=6)
-                else:
-                    high = df_plot.iloc[(df_plot['time_dt']-pd.to_datetime(row['time'])).abs().argsort()[:1]]['high'].values[0]
-                    ax.scatter(t_num, high+(high*0.00015), marker='v', s=120, color='#FF8C00', zorder=6)
-            except: continue
+        for _, row in trades_snapshot.iterrows():
+            entry_time_num = mdates.date2num(row['time'])
+            expiry_time_num = mdates.date2num(row['expiry'])
+            ax.hlines(row['entry'], entry_time_num, expiry_time_num, colors='purple', linestyles='dashed', linewidth=1)
+            ax.vlines(expiry_time_num, df_plot['low'].min(), df_plot['high'].max(),
+                      colors='orange' if row['profit'] is None else ('green' if row['profit']>0 else 'red'),
+                      linestyles='dotted', linewidth=1)
+            if row['signal']=="BUY":
+                ax.scatter(entry_time_num, row['entry'], marker='^', s=80, color='#3A7DFF', zorder=6)
+            else:
+                ax.scatter(entry_time_num, row['entry'], marker='v', s=80, color='#FF8C00', zorder=6)
 
-    ax.set_title(f"{SYMBOL} Live Candlestick Chart")
+    ax.set_title(f"{SYMBOL} Scalper Candlestick Chart")
     ax.set_ylabel("Price")
     ax.xaxis_date()
     fig.autofmt_xdate()
@@ -171,19 +181,19 @@ def plot_candles(df_all, trades_snapshot):
     fig.canvas.flush_events()
 
 # ===================== MAIN LOOP =======================
-print("LIVE CANDLESTICK BOT STARTED")
+print("SCALPER CANDLESTICK BOT STARTED")
 
 try:
     while True:
         rates = mt5.copy_rates_from_pos(SYMBOL, TIMEFRAME, 0, CANDLE_FETCH)
-        if rates is None or len(rates)==0:
+        if rates is None or len(rates) == 0:
             time.sleep(1)
             continue
 
         df = pd.DataFrame(rates)
         save_live_data_latest(df)
 
-        # Get signal from indicator.py
+        # Signal
         signal = get_ema_signal(df)
         closed_candle_ts = int(df.iloc[-2]['time']) if len(df)>1 else None
         if signal and closed_candle_ts is not None:

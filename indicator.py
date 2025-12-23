@@ -1,27 +1,25 @@
 # ============================================================
 # File: indicator.py
 # EMA20 / EMA50 + RSI + ATR + Swing High/Low
-# Binary Options – Current Candle Entry
+# Binary Options Scalper – Current Candle Entry
 # ============================================================
 
 import pandas as pd
 import numpy as np
 
-# ============================================================
-# SIGNAL ENGINE
-# ============================================================
+# ================== SIGNAL ENGINE =========================
 def get_ema_signal(df):
     """
     Returns:
         "BUY", "SELL", or None
     Signal logic uses LAST CLOSED candle only (NO repaint)
     """
-    if df is None or len(df) < 60:
+    if df is None or len(df) < 50:
         return None
 
     df = df.copy()
 
-    # ================= INDICATORS =================
+    # ---------------- INDICATORS ----------------
     df["EMA20"] = df["close"].ewm(span=20, adjust=False).mean()
     df["EMA50"] = df["close"].ewm(span=50, adjust=False).mean()
 
@@ -47,9 +45,8 @@ def get_ema_signal(df):
     df["SwingHigh"] = df["high"].rolling(5).max()
     df["SwingLow"] = df["low"].rolling(5).min()
 
-    # ================= LAST CLOSED CANDLE =================
+    # ---------------- LAST CLOSED CANDLE ----------------
     i = -2  # Last closed candle
-
     close = df.iloc[i]["close"]
     ema20 = df.iloc[i]["EMA20"]
     ema50 = df.iloc[i]["EMA50"]
@@ -57,45 +54,41 @@ def get_ema_signal(df):
     atr = df.iloc[i]["ATR"]
     atr_ma = df.iloc[i]["ATR_MA"]
 
-    # ================= VOLATILITY FILTER =================
-    if atr < atr_ma * 0.9:
+    # ---------------- VOLATILITY FILTER (Scalper: smaller ATR threshold) ----------------
+    if atr < atr_ma * 0.8:
         return None
 
-    # ================= REVERSAL =================
+    # ---------------- REVERSAL ----------------
     prev_ema20 = df.iloc[i - 1]["EMA20"]
     prev_ema50 = df.iloc[i - 1]["EMA50"]
     prev_rsi = df.iloc[i - 1]["RSI"]
 
-    if prev_ema20 < prev_ema50 and ema20 > ema50 and prev_rsi < 30 and rsi > 35:
+    if prev_ema20 < prev_ema50 and ema20 > ema50 and prev_rsi < 35 and rsi > 40:
         return "BUY"
 
-    if prev_ema20 > prev_ema50 and ema20 < ema50 and prev_rsi > 70 and rsi < 65:
+    if prev_ema20 > prev_ema50 and ema20 < ema50 and prev_rsi > 65 and rsi < 60:
         return "SELL"
 
-    # ================= PULLBACK =================
+    # ---------------- PULLBACK ----------------
     if ema20 > ema50 and close <= ema20 and 40 <= rsi <= 55:
         return "BUY"
 
     if ema20 < ema50 and close >= ema20 and 45 <= rsi <= 60:
         return "SELL"
 
-    # ================= BREAKOUT =================
-    if (ema20 > ema50 and close > df.iloc[i - 1]["SwingHigh"] 
-        and rsi > 55 and atr > atr_ma * 1.2):
+    # ---------------- BREAKOUT ----------------
+    if ema20 > ema50 and close > df.iloc[i - 1]["SwingHigh"] and rsi > 55 and atr > atr_ma * 1.1:
         return "BUY"
 
-    if (ema20 < ema50 and close < df.iloc[i - 1]["SwingLow"] 
-        and rsi < 45 and atr > atr_ma * 1.2):
+    if ema20 < ema50 and close < df.iloc[i - 1]["SwingLow"] and rsi < 45 and atr > atr_ma * 1.1:
         return "SELL"
 
     return None
 
-# ============================================================
-# BACKTEST ENGINE (BINARY OPTIONS – CURRENT CANDLE)
-# ============================================================
+# ================== BACKTEST ENGINE =========================
 def backtest_csv(csv_file, stake=10, payout=0.8):
     """
-    Binary Options Backtest:
+    Binary Options Scalper Backtest:
     - Signal from LAST CLOSED candle
     - Entry at CURRENT candle OPEN
     - Expiry at CURRENT candle CLOSE
@@ -105,16 +98,13 @@ def backtest_csv(csv_file, stake=10, payout=0.8):
 
     trades = []
 
-    for i in range(60, len(df) - 1):
+    for i in range(50, len(df) - 1):
         signal = get_ema_signal(df.iloc[: i + 1])
-
         if signal:
-            entry = df.iloc[i + 1]["open"]      # CURRENT candle OPEN
-            exit_price = df.iloc[i + 1]["close"] # CURRENT candle CLOSE
-
+            entry = df.iloc[i + 1]["open"]
+            exit_price = df.iloc[i + 1]["close"]
             win = exit_price > entry if signal == "BUY" else exit_price < entry
             profit = stake * payout if win else -stake
-
             trades.append({
                 "time": df.iloc[i + 1]["time"],
                 "signal": signal,
@@ -124,22 +114,14 @@ def backtest_csv(csv_file, stake=10, payout=0.8):
             })
 
     trades_df = pd.DataFrame(trades)
-
     if not trades_df.empty:
         total_profit = trades_df["profit"].sum()
         win_rate = (trades_df["profit"] > 0).mean() * 100
-
-        print(
-            f"Binary Backtest | "
-            f"Profit: {total_profit:.2f} | "
-            f"Trades: {len(trades_df)} | "
-            f"Win Rate: {win_rate:.2f}%"
-        )
+        print(f"Binary Scalper Backtest | Profit: {total_profit:.2f} | Trades: {len(trades_df)} | Win Rate: {win_rate:.2f}%")
 
     return trades_df
 
-# ============================================================
-# RUN BACKTEST
-# ============================================================
+
+# ================== TEST BACKTEST =========================
 if __name__ == "__main__":
     backtest_csv("EURUSD_M1.csv")
