@@ -1,7 +1,6 @@
 # ============================================================
 # File: bo_ema_robot.py
-# EMA20/50 Scalper Binary Option Robot (Live MT5 + Signals)
-# Tick-based expiry result (scalper style)
+# EMA20/50 Scalper Binary Option Robot (Price Action Entry + Exit)
 # ============================================================
 
 import MetaTrader5 as mt5
@@ -23,7 +22,7 @@ TIMEFRAME = mt5.TIMEFRAME_M1
 
 STAKE = 10
 PAYOUT = 0.8
-EXPIRY_MINUTES = 1  # scalper: short expiry
+EXPIRY_MINUTES = 2  # scalper: short expiry
 
 LIVE_DATA_LOG = "live_data.csv"
 TRADE_LOG = "bo_trades.csv"
@@ -61,9 +60,6 @@ def save_live_data_latest(df):
     if candle_ts == _last_saved_candle_ts:
         return
 
-    tick = mt5.symbol_info_tick(SYMBOL)
-    spread = tick.ask - tick.bid if tick else None
-
     row = {
         'time': pd.to_datetime(candle_ts, unit='s'),
         'open': latest['open'].values[0],
@@ -72,7 +68,7 @@ def save_live_data_latest(df):
         'close': latest['close'].values[0],
         'tick_volume': latest.get('tick_volume', np.nan),
         'real_volume': latest.get('real_volume', np.nan),
-        'spread': spread
+        'spread': np.nan  # no bid/ask
     }
     pd.DataFrame([row]).to_csv(LIVE_DATA_LOG, mode='a', header=False, index=False)
     _last_saved_candle_ts = candle_ts
@@ -103,16 +99,14 @@ def place_bo_trade(signal, entry_price, candle_ts):
     return True
 
 def finish_trade(signal, entry_price, expiry_time):
-    """Resolve trade using tick-based price (scalper behavior)"""
+    """Resolve trade using candle price (price-action mode)"""
     global _trade_in_progress
     try:
-        tick = mt5.symbol_info_tick(SYMBOL)
-        if tick is None:
-            close_price = entry_price
-        else:
-            close_price = tick.bid if signal=="BUY" else tick.ask
+        # Use last closed candle as price at expiry
+        rates = mt5.copy_rates_from_pos(SYMBOL, TIMEFRAME, 0, 1)
+        close_price = rates[0]['close'] if rates is not None and len(rates) > 0 else entry_price
 
-        # Determine win/loss immediately
+        # Determine win/loss
         win = (close_price > entry_price) if signal=="BUY" else (close_price < entry_price)
         profit = STAKE * PAYOUT if win else -STAKE
 
@@ -197,8 +191,7 @@ try:
         signal = get_ema_signal(df)
         closed_candle_ts = int(df.iloc[-2]['time']) if len(df)>1 else None
         if signal and closed_candle_ts is not None:
-            tick = mt5.symbol_info_tick(SYMBOL)
-            entry_price = tick.ask if signal=="BUY" else tick.bid
+            entry_price = df.iloc[-2]['close']  # last closed candle price
             place_bo_trade(signal, entry_price, closed_candle_ts)
 
         with trades_lock:
