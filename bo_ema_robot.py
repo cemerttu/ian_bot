@@ -14,7 +14,8 @@ import matplotlib.dates as mdates
 from mplfinance.original_flavor import candlestick_ohlc
 import os
 
-from indicator import get_ema_signal
+from indicator import get_ema_signal, add_indicators
+from ai_filter import extract_features, ai_allow_trade, record_trade, train_model
 
 # ===================== CONFIG =======================
 SYMBOL = "EURUSD"
@@ -68,16 +69,22 @@ def save_live_data_latest(df):
         'close': latest['close'].values[0],
         'tick_volume': latest.get('tick_volume', np.nan),
         'real_volume': latest.get('real_volume', np.nan),
-        'spread': np.nan  # no bid/ask
+        'spread': np.nan
     }
     pd.DataFrame([row]).to_csv(LIVE_DATA_LOG, mode='a', header=False, index=False)
     _last_saved_candle_ts = candle_ts
 
 # ===================== TRADE HANDLER ===================
-def place_bo_trade(signal, entry_price, candle_ts):
-    """Open trade and schedule resolution after EXPIRY_MINUTES"""
+def place_bo_trade(signal, entry_price, candle_ts, df_snapshot):
     global _last_traded_candle_ts, _trade_in_progress
     if _trade_in_progress or candle_ts == _last_traded_candle_ts:
+        return False
+
+    # Extract features for AI
+    features = extract_features(df_snapshot)
+    allow = ai_allow_trade(features)
+    if not allow:
+        print(f"[{datetime.now().strftime('%H:%M:%S')}] AI BLOCKED TRADE: {signal} at {entry_price:.5f}")
         return False
 
     _trade_in_progress = True
@@ -92,21 +99,17 @@ def place_bo_trade(signal, entry_price, candle_ts):
     with trades_lock:
         trades_df.loc[len(trades_df)] = provisional
 
-    # Schedule trade resolution at expiry
-    t = threading.Timer(EXPIRY_MINUTES*60, finish_trade, args=(signal, entry_price, expiry_time))
+    t = threading.Timer(EXPIRY_MINUTES*60, finish_trade, args=(signal, entry_price, expiry_time, df_snapshot, features))
     t.daemon = True
     t.start()
     return True
 
-def finish_trade(signal, entry_price, expiry_time):
-    """Resolve trade using candle price (price-action mode)"""
+def finish_trade(signal, entry_price, expiry_time, df_snapshot, features):
     global _trade_in_progress
     try:
-        # Use last closed candle as price at expiry
         rates = mt5.copy_rates_from_pos(SYMBOL, TIMEFRAME, 0, 1)
         close_price = rates[0]['close'] if rates is not None and len(rates) > 0 else entry_price
 
-        # Determine win/loss
         win = (close_price > entry_price) if signal=="BUY" else (close_price < entry_price)
         profit = STAKE * PAYOUT if win else -STAKE
 
@@ -118,14 +121,19 @@ def finish_trade(signal, entry_price, expiry_time):
                 trades_df.at[idx, 'profit'] = profit
                 trades_df.at[idx, 'expiry'] = expiry_time
 
-        # Log trade
         pd.DataFrame([{
             'time': datetime.now(), 'signal': signal,
             'entry': entry_price, 'close': close_price,
             'profit': profit, 'expiry': expiry_time
         }]).to_csv(TRADE_LOG, mode='a', header=False, index=False)
 
+        # Record trade in AI training data
+        record_trade(features, win)
+
         print(f"[{datetime.now().strftime('%H:%M:%S')}] TRADE RESULT: {'WIN' if win else 'LOSS'} | Profit: {profit:.2f}")
+
+        # Retrain AI
+        train_model()
 
     except Exception as e:
         print("Error in finish_trade:", e)
@@ -147,13 +155,11 @@ def plot_candles(df_all, trades_snapshot):
     width = (df_plot['time_num'].diff().median() if not df_plot['time_num'].diff().empty else 0.0005) * 0.6
     candlestick_ohlc(ax, ohlc, width=width, colorup='green', colordown='red', alpha=0.9)
 
-    # EMAs
     df_plot['EMA20'] = df_plot['close'].ewm(span=20, adjust=False).mean()
     df_plot['EMA50'] = df_plot['close'].ewm(span=50, adjust=False).mean()
     ax.plot(df_plot['time_num'], df_plot['EMA20'], color='blue', linewidth=1)
     ax.plot(df_plot['time_num'], df_plot['EMA50'], color='red', linewidth=1)
 
-    # Trades
     if not trades_snapshot.empty:
         for _, row in trades_snapshot.iterrows():
             entry_time_num = mdates.date2num(row['time'])
@@ -185,14 +191,14 @@ try:
             continue
 
         df = pd.DataFrame(rates)
+        df = add_indicators(df)
         save_live_data_latest(df)
 
-        # Signal
         signal = get_ema_signal(df)
         closed_candle_ts = int(df.iloc[-2]['time']) if len(df)>1 else None
         if signal and closed_candle_ts is not None:
-            entry_price = df.iloc[-2]['close']  # last closed candle price
-            place_bo_trade(signal, entry_price, closed_candle_ts)
+            entry_price = df.iloc[-2]['close']
+            place_bo_trade(signal, entry_price, closed_candle_ts, df.copy())
 
         with trades_lock:
             trades_plot = trades_df.copy()
