@@ -16,7 +16,7 @@ import os
 
 from indicator import get_ema_signal, add_indicators
 from ai_filter import extract_features, ai_allow_trade, record_trade, train_model
-
+   
 # ===================== CONFIG =======================
 SYMBOL = "EURUSD"
 TIMEFRAME = mt5.TIMEFRAME_M1
@@ -40,7 +40,7 @@ print("Logged in:", acct.login)
 
 # ===================== GLOBALS =======================
 trades_df = pd.DataFrame(columns=['time','signal','entry','close','profit','expiry'])
-trades_lock = threading.Lock()
+trades_lock = threading.Lock() 
 _last_saved_candle_ts = None
 _last_traded_candle_ts = None
 _trade_in_progress = False
@@ -145,7 +145,7 @@ plt.ion()
 fig, ax = plt.subplots(figsize=(12,6))
 
 def plot_candles(df_all, trades_snapshot):
-    ax.clear()
+    ax.clear() 
     df_plot = df_all.tail(PLOT_CANDLES).copy()
     if df_plot.empty: return
 
