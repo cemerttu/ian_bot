@@ -16,6 +16,7 @@ import os
 
 from indicator import get_ema_signal, add_indicators
 from ai_filter import extract_features, ai_allow_trade, record_trade, train_model
+from news_filter import news_block_active
    
 # ===================== CONFIG =======================
 SYMBOL = "EURUSD"
@@ -24,7 +25,7 @@ TIMEFRAME = mt5.TIMEFRAME_M1
 STAKE = 10
 PAYOUT = 0.8
 EXPIRY_MINUTES = 2  # scalper: short expiry
-
+ 
 LIVE_DATA_LOG = "live_data.csv"
 TRADE_LOG = "bo_trades.csv"
 
@@ -42,7 +43,7 @@ print("Logged in:", acct.login)
 trades_df = pd.DataFrame(columns=['time','signal','entry','close','profit','expiry'])
 trades_lock = threading.Lock() 
 _last_saved_candle_ts = None
-_last_traded_candle_ts = None
+_last_traded_candle_ts = None 
 _trade_in_progress = False
 
 # Create files if missing
@@ -78,6 +79,17 @@ def save_live_data_latest(df):
 def place_bo_trade(signal, entry_price, candle_ts, df_snapshot):
     global _last_traded_candle_ts, _trade_in_progress
     if _trade_in_progress or candle_ts == _last_traded_candle_ts:
+        return False
+
+    # Check news block
+    try:
+        news_block, reason = news_block_active(SYMBOL)
+    except Exception as e:
+        print(f"[{datetime.now().strftime('%H:%M:%S')}] NEWS CHECK ERROR: {e}")
+        news_block, reason = False, None
+
+    if news_block:
+        print(f"[{datetime.now().strftime('%H:%M:%S')}] NEWS BLOCKED TRADE: {reason}")
         return False
 
     # Extract features for AI
@@ -121,7 +133,7 @@ def finish_trade(signal, entry_price, expiry_time, df_snapshot, features):
                 trades_df.at[idx, 'profit'] = profit
                 trades_df.at[idx, 'expiry'] = expiry_time
 
-        pd.DataFrame([{
+        pd.DataFrame ([{
             'time': datetime.now(), 'signal': signal,
             'entry': entry_price, 'close': close_price,
             'profit': profit, 'expiry': expiry_time
