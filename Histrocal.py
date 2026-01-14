@@ -4,7 +4,7 @@ from datetime import datetime
 
 mt5.initialize()
 
-rates = mt5.copy_rates_from_pos("EURUSD", mt5.TIMEFRAME_M1, 0, 101420)
+rates = mt5.copy_rates_from_pos("EURUSD", mt5.TIMEFRAME_M15, 0, 248684)
 df = pd.DataFrame(rates)
 df['time'] = pd.to_datetime(df['time'], unit='s')
 df.to_csv("EURUSD_M1.csv", index=False)

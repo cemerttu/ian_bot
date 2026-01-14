@@ -16,7 +16,6 @@ import os
 
 from indicator import get_ema_signal, add_indicators
 from ai_filter import extract_features, ai_allow_trade, record_trade, train_model
-from news_filter import news_block_active
    
 # ===================== CONFIG =======================
 SYMBOL = "EURUSD"
@@ -81,16 +80,6 @@ def place_bo_trade(signal, entry_price, candle_ts, df_snapshot):
     if _trade_in_progress or candle_ts == _last_traded_candle_ts:
         return False
 
-    # Check news block
-    try:
-        news_block, reason = news_block_active(SYMBOL)
-    except Exception as e:
-        print(f"[{datetime.now().strftime('%H:%M:%S')}] NEWS CHECK ERROR: {e}")
-        news_block, reason = False, None
-
-    if news_block:
-        print(f"[{datetime.now().strftime('%H:%M:%S')}] NEWS BLOCKED TRADE: {reason}")
-        return False
 
     # Extract features for AI
     features = extract_features(df_snapshot)
