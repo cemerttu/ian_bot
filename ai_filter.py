@@ -1,13 +1,13 @@
 # ============================================================
 # File: ai_filter.py
-# Learns from PAST trade outcomes to block likely losing trades
-# Uses machine learning (Random Forest) — a valid AI technique
+# Advanced AI Filter with Contextual Awareness
 # ============================================================
 
 import pandas as pd
 import os
 import joblib
 import numpy as np
+from datetime import datetime
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
@@ -15,150 +15,132 @@ from sklearn.metrics import accuracy_score
 # Configuration
 DATA_FILE = "ai_training.csv"
 MODEL_FILE = "ai_model.pkl"
-FEATURES = ["ema_gap", "rsi", "atr_ratio", "trend"]
-MIN_SAMPLES_TO_TRAIN = 150  # Increased to reduce overfitting
-MIN_TEST_SIZE = 30
+
+# Expanded Features for better context
+FEATURES = [
+    "ema_gap", 
+    "rsi", 
+    "atr_ratio", 
+    "trend", 
+    "hour",           # Time Context
+    "vol_index",      # Volatility Context
+    "ema_slope"       # Trend Strength
+]
+
+MIN_SAMPLES_TO_TRAIN = 200  # Increased for better stability
+MIN_TEST_SIZE = 40
 
 def extract_features(df):
     """
-    Extract features from the **latest completed bar** (index -1).
-    Assumes this function is called at the close of a new bar,
-    and the trade decision would be made using this bar's data.
+    Extracts advanced features from the latest CLOSED candle.
     """
-    if len(df) < 2:
-        raise ValueError("DataFrame must have at least 2 rows to extract features.")
+    if len(df) < 50:
+        raise ValueError("DataFrame needs more rows for stable feature extraction.")
     
-    i = -1  # Use the latest completed bar
-    row = df.iloc[i]
+    # Use index -2 (the last fully closed candle) to avoid data leakage
+    row = df.iloc[-2]
+    prev_row = df.iloc[-3]
     
+    # 1. Basic Technicals
     ema_gap = row["close"] - row["EMA20"]
     rsi = row["RSI"]
     atr_ma = row["ATR_MA"]
-    atr_ratio = row["ATR"] / atr_ma if atr_ma > 1e-8 else 0.0
-    trend = 1 if row["EMA20"] > row["EMA50"] else -1
-
-    return {
-        "ema_gap": float(ema_gap),
-        "rsi": float(rsi),
-        "atr_ratio": float(atr_ratio),
-        "trend": int(trend)
-    }
-
-def log_trade_candidate(features):
-    """
-    Logs a trade candidate **before knowing the outcome**.
-    This row will later be updated with 'win' once outcome is known.
-    We store a temporary row with win = -1 (unknown).
-    """
-    row = features.copy()
-    row["win"] = -1  # -1 means outcome not yet known
-    df_row = pd.DataFrame([row])
+    atr_ratio = row["ATR"] / atr_ma if atr_ma != 0 else 1
     
-    if not os.path.exists(DATA_FILE):
-        df_row.to_csv(DATA_FILE, index=False)
+    # 2. Trend Direction (1 for Up, 0 for Down)
+    trend = 1 if row["EMA20"] > row["EMA50"] else 0
+    
+    # 3. Time Context (Hour of the day in UTC)
+    hour = datetime.utcnow().hour
+    
+    # 4. Volatility Index (Current Volatility vs Long-term Volatility)
+    # Checks if market is currently "quiet" or "explosive"
+    long_term_atr = df["ATR"].rolling(50).mean().iloc[-1]
+    vol_index = row["ATR"] / long_term_atr if long_term_atr != 0 else 1
+    
+    # 5. EMA Slope (Rate of change of the trend)
+    ema_slope = row["EMA20"] - prev_row["EMA20"]
+    
+    return [ema_gap, rsi, atr_ratio, trend, hour, vol_index, ema_slope]
+
+def record_trade(features, outcome):
+    """
+    Saves the trade features and outcome (1=Win, 0=Loss) to CSV.
+    """
+    new_data = pd.DataFrame([features + [outcome]], columns=FEATURES + ["target"])
+    
+    if not os.path.isfile(DATA_FILE):
+        new_data.to_csv(DATA_FILE, index=False)
     else:
-        df_row.to_csv(DATA_FILE, mode="a", header=False, index=False)
-
-def update_last_trade_outcome(win: bool):
-    """
-    Updates the **most recent** trade candidate with its actual outcome.
-    Call this AFTER the trade is closed and result is known.
-    """
-    if not os.path.exists(DATA_FILE):
-        print("Warning: No training file to update outcome.")
-        return
-
-    df = pd.read_csv(DATA_FILE)
-    if df.empty:
-        return
-
-    # Find last row with win == -1 (pending outcome)
-    pending_idx = df[df['win'] == -1].index
-    if len(pending_idx) == 0:
-        print("Warning: No pending trade to update.")
-        return
-
-    last_pending = pending_idx[-1]
-    df.at[last_pending, 'win'] = int(win)
-    df.to_csv(DATA_FILE, index=False)
-
-def record_trade(features, win):
-    """
-    Records a completed trade into the training CSV with known outcome.
-    `features` should be a dict matching the FEATURES keys.
-    `win` is a boolean or int (True/1 for win, False/0 for loss).
-    """
-    row = features.copy()
-    row['win'] = int(bool(win))
-    df_row = pd.DataFrame([row])
-    if not os.path.exists(DATA_FILE):
-        df_row.to_csv(DATA_FILE, index=False)
-    else:
-        df_row.to_csv(DATA_FILE, mode='a', header=False, index=False)
+        new_data.to_csv(DATA_FILE, mode='a', header=False, index=False)
 
 def train_model():
     """
-    Trains the model only on rows with known outcomes (win == 0 or 1).
-    Uses train/test split and class balancing.
+    Trains the Random Forest using a Balanced Class Weight.
     """
-    if not os.path.exists(DATA_FILE):
+    if not os.path.isfile(DATA_FILE):
+        print("AI: No data file found. Skipping training.")
         return
 
     df = pd.read_csv(DATA_FILE)
-    # Keep only resolved trades
-    df = df[df['win'] != -1].copy()
-    
     if len(df) < MIN_SAMPLES_TO_TRAIN:
-        print(f"AI: Not enough resolved trades ({len(df)} < {MIN_SAMPLES_TO_TRAIN}). Skipping training.")
+        print(f"AI: Not enough data yet ({len(df)}/{MIN_SAMPLES_TO_TRAIN})")
         return
 
     X = df[FEATURES]
-    y = df["win"].astype(int)
+    y = df["target"]
 
-    if len(np.unique(y)) < 2:
-        print("AI: Only one class present. Skipping training.")
-        return
-
-    # Ensure enough samples for test set
+    # Use Stratified split to keep Win/Loss ratio consistent in training and testing
     test_size = max(0.2, MIN_TEST_SIZE / len(df))
     try:
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=test_size, random_state=42, stratify=y
         )
     except ValueError:
-        # Fallback if stratify fails (e.g., too few samples per class)
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=test_size, random_state=42
         )
 
+    # Random Forest Configuration
     model = RandomForestClassifier(
-        n_estimators=200,
-        max_depth=5,
-        class_weight='balanced',  # Handle class imbalance
+        n_estimators=300,        # More trees for more features
+        max_depth=6,             # Slightly deeper to capture 'Hour' and 'Vol' interactions
+        class_weight='balanced', # Crucial: pay extra attention to the fewer "Losses"
         random_state=42,
         n_jobs=-1
     )
+    
     model.fit(X_train, y_train)
 
-    # Optional: log performance
     acc = accuracy_score(y_test, model.predict(X_test))
-    print(f"AI: Model trained on {len(df)} samples. Test accuracy: {acc:.2%}")
+    print(f"AI: Training Complete. Samples: {len(df)}. Test Accuracy: {acc:.2%}")
 
     joblib.dump(model, MODEL_FILE)
 
-def ai_allow_trade(features, threshold=0.55):
+def ai_allow_trade(features, threshold=0.58):
     """
-    Returns True if model predicts win probability >= threshold.
-    Returns True if model not available (fail-open).
+    Determines if a trade is statistically likely to win.
+    Increased threshold to 0.58 for stricter filtering.
     """
     if not os.path.exists(MODEL_FILE):
-        return True  # Allow trade if no model (e.g., early stage)
-
-    try:
-        model = joblib.load(MODEL_FILE)
-        X = pd.DataFrame([features])
-        prob_win = model.predict_proba(X)[0][1]  # Prob of class 1 (win)
-        return prob_win >= threshold
-    except Exception as e:
-        print(f"AI: Error during prediction: {e}. Allowing trade as fallback.")
+        return True # Fail-open: allow trades if model isn't ready
+    
+    model = joblib.load(MODEL_FILE)
+    
+    # Check if model expects different number of features
+    expected_features = model.n_features_in_
+    if len(features) != expected_features:
+        print(f"AI: Feature mismatch (got {len(features)}, expected {expected_features}). Retraining...")
+        train_model()
+        return True  # Allow trade while retraining
+    
+    # Get probability for class 1 (Win)
+    probs = model.predict_proba([features])[0]
+    win_prob = probs[1] if len(probs) > 1 else 0
+    
+    if win_prob >= threshold:
+        print(f"AI: TRADE APPROVED (Confidence: {win_prob:.2%})")
         return True
+    else:
+        print(f"AI: TRADE BLOCKED (Confidence: {win_prob:.2%})")
+        return False
