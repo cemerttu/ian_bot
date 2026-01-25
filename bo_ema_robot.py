@@ -192,7 +192,7 @@ def plot_candles(df_all, trades_snapshot):
 
 # ===================== MAIN LOOP =====================
 print("SCALPER CANDLESTICK BOT STARTED")
-
+ 
 try:
     while True:
         rates = mt5.copy_rates_from_pos(SYMBOL, TIMEFRAME, 0, CANDLE_FETCH)
