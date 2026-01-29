@@ -134,8 +134,11 @@ def ai_allow_trade(features, threshold=0.58):
         train_model()
         return True  # Allow trade while retraining
     
+    # Convert features list to DataFrame with proper column names to match training data
+    features_df = pd.DataFrame([features], columns=FEATURES)
+    
     # Get probability for class 1 (Win)
-    probs = model.predict_proba([features])[0]
+    probs = model.predict_proba(features_df)[0]
     win_prob = probs[1] if len(probs) > 1 else 0
     
     if win_prob >= threshold:
