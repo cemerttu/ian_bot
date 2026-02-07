@@ -27,7 +27,7 @@ PAYOUT = 0.8
 EXPIRY_MINUTES = 2
 
 LIVE_DATA_LOG = "live_data.csv"
-TRADE_LOG = "bo_trades.csv"
+TRADE_LOG = "bo_trades.csv"  
 
 PLOT_CANDLES = 80
 LOOP_SLEEP = 0.2
