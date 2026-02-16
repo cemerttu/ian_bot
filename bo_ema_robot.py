@@ -32,7 +32,7 @@ TRADE_LOG = "bo_trades.csv"
 PLOT_CANDLES = 80
 LOOP_SLEEP = 0.2
 CANDLE_FETCH = 200
-
+ 
 # ===================== MT5 INIT ======================
 if not mt5.initialize():
     raise SystemExit("MT5 initialize() failed")
