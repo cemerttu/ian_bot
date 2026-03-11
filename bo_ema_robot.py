@@ -66,7 +66,7 @@ def save_live_data_latest(df):
     if candle_ts == _last_saved_candle_ts:
         return
 
-    row = { 
+    row = {  
         'time': pd.to_datetime(candle_ts, unit='s'),
         'open': latest['open'].values[0],
         'high': latest['high'].values[0],
