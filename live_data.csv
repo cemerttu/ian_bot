@@ -47792,3 +47792,429 @@ Name: real_volume, dtype: uint64",
 2026-05-15 14:07:00,1.16446,1.16446,1.16446,1.16446,"199    1
 Name: tick_volume, dtype: uint64","199    0
 Name: real_volume, dtype: uint64",
+2026-05-26 13:48:00,1.16399,1.16399,1.16397,1.16398,"199    5
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 13:49:00,1.16394,1.16394,1.16393,1.16393,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 13:50:00,1.16401,1.16401,1.16401,1.16401,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 13:51:00,1.16402,1.16402,1.16402,1.16402,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 13:52:00,1.16408,1.16408,1.16408,1.16408,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 13:53:00,1.1642000000000001,1.1642000000000001,1.1642000000000001,1.1642000000000001,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 13:54:00,1.1642000000000001,1.1642000000000001,1.1642000000000001,1.1642000000000001,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 13:55:00,1.16417,1.16417,1.16417,1.16417,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 13:56:00,1.16411,1.16411,1.16411,1.16411,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 13:57:00,1.16417,1.16417,1.16417,1.16417,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 13:58:00,1.16411,1.16413,1.16411,1.16413,"199    3
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 13:59:00,1.16424,1.16424,1.16424,1.16424,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:00:00,1.16408,1.16409,1.16408,1.16409,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:05:00,1.16415,1.16422,1.1641,1.16414,"199    33
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:06:00,1.16417,1.16418,1.16417,1.16418,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:07:00,1.16421,1.16421,1.1642000000000001,1.1642000000000001,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:08:00,1.16422,1.16422,1.16422,1.16422,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:09:00,1.16425,1.16425,1.16425,1.16425,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:10:00,1.16434,1.16434,1.16434,1.16434,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:11:00,1.16438,1.16438,1.16438,1.16438,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:12:00,1.1643,1.1643,1.1643,1.1643,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:13:00,1.1644,1.1644,1.1644,1.1644,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:14:00,1.16431,1.16431,1.1643,1.1643,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:15:00,1.16426,1.16426,1.16425,1.16426,"199    3
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:16:00,1.16421,1.16421,1.16421,1.16421,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:17:00,1.16424,1.16424,1.16424,1.16424,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:18:00,1.16431,1.16431,1.16431,1.16431,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:19:00,1.16418,1.16418,1.16418,1.16418,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:20:00,1.16418,1.16418,1.16418,1.16418,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:21:00,1.1641,1.1641,1.1641,1.1641,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:22:00,1.1641,1.1641,1.1641,1.1641,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:23:00,1.16406,1.16406,1.16406,1.16406,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:24:00,1.16404,1.16404,1.16404,1.16404,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:25:00,1.16409,1.16409,1.16409,1.16409,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:26:00,1.16406,1.16408,1.16406,1.16408,"199    3
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:27:00,1.16404,1.16404,1.16404,1.16404,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:28:00,1.16397,1.16397,1.16397,1.16397,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:29:00,1.1639599999999999,1.1639599999999999,1.1639599999999999,1.1639599999999999,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:30:00,1.16392,1.16395,1.16392,1.16394,"199    4
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:31:00,1.16403,1.16403,1.16403,1.16403,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:32:00,1.16401,1.16401,1.16401,1.16401,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:33:00,1.1641,1.1641,1.1641,1.1641,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:34:00,1.16403,1.16403,1.16403,1.16403,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:35:00,1.16382,1.16389,1.16382,1.16389,"199    4
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:36:00,1.16349,1.16349,1.16348,1.16348,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:37:00,1.1636199999999999,1.1636199999999999,1.1636199999999999,1.1636199999999999,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:38:00,1.16382,1.16383,1.16382,1.16383,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:39:00,1.16374,1.16374,1.16374,1.16374,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:40:00,1.16368,1.16368,1.16368,1.16368,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:41:00,1.1635900000000001,1.1636,1.1635900000000001,1.1636,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:42:00,1.16356,1.16356,1.16356,1.16356,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:43:00,1.1635,1.1635,1.1635,1.1635,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:44:00,1.16355,1.16355,1.16355,1.16355,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:45:00,1.16342,1.16342,1.16342,1.16342,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:46:00,1.16334,1.16334,1.16334,1.16334,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:47:00,1.16341,1.16341,1.16341,1.16341,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:48:00,1.1634,1.1634,1.16339,1.1634,"199    3
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:49:00,1.16331,1.16331,1.16331,1.16331,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:50:00,1.16336,1.16336,1.1633499999999999,1.1633499999999999,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:51:00,1.1634,1.1634,1.1634,1.1634,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:52:00,1.1634,1.16341,1.1634,1.16341,"199    4
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:53:00,1.1634,1.1634,1.1634,1.1634,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:54:00,1.16343,1.16343,1.16338,1.16338,"199    3
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:55:00,1.16346,1.16346,1.16345,1.16345,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:56:00,1.16352,1.16352,1.1635,1.1635,"199    3
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:57:00,1.16353,1.16353,1.16353,1.16353,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:58:00,1.16344,1.16345,1.16344,1.16345,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 14:59:00,1.16336,1.16336,1.16336,1.16336,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:00:00,1.16338,1.16338,1.16331,1.16331,"199    4
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:01:00,1.16322,1.16322,1.16322,1.16322,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:02:00,1.16339,1.1634,1.16339,1.1634,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:03:00,1.16343,1.16343,1.16343,1.16343,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:04:00,1.16345,1.16345,1.16345,1.16345,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:05:00,1.1634,1.16342,1.1634,1.16342,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:06:00,1.16341,1.16344,1.16341,1.16344,"199    3
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:07:00,1.1634,1.1634,1.1634,1.1634,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:08:00,1.16334,1.16334,1.16334,1.16334,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:09:00,1.16307,1.16307,1.16304,1.16304,"199    4
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:10:00,1.16329,1.16329,1.16328,1.16329,"199    3
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:11:00,1.16331,1.16331,1.16331,1.16331,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:12:00,1.16329,1.16329,1.16329,1.16329,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:13:00,1.16331,1.16332,1.16331,1.16332,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:14:00,1.16343,1.16343,1.1634,1.1634,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:15:00,1.1632500000000001,1.1632500000000001,1.16324,1.16324,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:16:00,1.1632500000000001,1.1632500000000001,1.1632500000000001,1.1632500000000001,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:17:00,1.16324,1.16324,1.16324,1.16324,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:18:00,1.16328,1.16328,1.16328,1.16328,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:19:00,1.16321,1.16321,1.16321,1.16321,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:20:00,1.1632500000000001,1.16327,1.16324,1.16327,"199    7
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:21:00,1.16331,1.16331,1.16331,1.16331,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:22:00,1.16333,1.16333,1.16333,1.16333,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:23:00,1.16327,1.16327,1.16326,1.16326,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:24:00,1.16322,1.16322,1.16322,1.16322,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:25:00,1.16319,1.16319,1.16319,1.16319,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:26:00,1.16323,1.16324,1.16323,1.16324,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:27:00,1.16331,1.16331,1.16331,1.16331,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:28:00,1.16337,1.16337,1.16337,1.16337,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:29:00,1.16339,1.16339,1.16339,1.16339,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:30:00,1.16346,1.16346,1.16345,1.16345,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:31:00,1.16336,1.16336,1.16336,1.16336,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:32:00,1.16339,1.16339,1.16337,1.16337,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:33:00,1.16343,1.16343,1.16343,1.16343,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:34:00,1.16346,1.16346,1.16346,1.16346,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:35:00,1.16356,1.16356,1.16355,1.16355,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:36:00,1.1635,1.1635,1.1635,1.1635,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:37:00,1.16344,1.16344,1.16344,1.16344,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:38:00,1.1633499999999999,1.1633499999999999,1.1633499999999999,1.1633499999999999,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:39:00,1.16327,1.16328,1.16327,1.16328,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:40:00,1.1632500000000001,1.1632500000000001,1.1632500000000001,1.1632500000000001,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:41:00,1.16341,1.16341,1.16341,1.16341,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:42:00,1.16336,1.16336,1.1633499999999999,1.1633499999999999,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:43:00,1.16345,1.16345,1.16345,1.16345,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:44:00,1.16343,1.16343,1.16341,1.16341,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:45:00,1.16332,1.16332,1.16331,1.16331,"199    4
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:46:00,1.16336,1.16337,1.16336,1.16337,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:47:00,1.16329,1.16329,1.16329,1.16329,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:48:00,1.16318,1.16318,1.16318,1.16318,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:49:00,1.1632,1.1632,1.1632,1.1632,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:50:00,1.1633,1.1633,1.1633,1.1633,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:51:00,1.16334,1.16334,1.16333,1.16333,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:52:00,1.16329,1.16329,1.16328,1.16329,"199    3
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:53:00,1.1632500000000001,1.1633,1.16324,1.16329,"199    7
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:54:00,1.16328,1.16328,1.16328,1.16328,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:55:00,1.16324,1.16326,1.16324,1.16326,"199    3
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:56:00,1.16315,1.16315,1.16315,1.16315,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:57:00,1.16311,1.16311,1.16311,1.16311,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:58:00,1.16309,1.1631,1.16309,1.1631,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 15:59:00,1.16319,1.16319,1.16318,1.16318,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 16:00:00,1.1631,1.1631,1.1631,1.1631,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 16:01:00,1.16311,1.16311,1.16311,1.16311,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 16:02:00,1.16313,1.16313,1.16313,1.16313,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 16:03:00,1.16316,1.16316,1.16315,1.16316,"199    3
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 16:04:00,1.16307,1.16307,1.16307,1.16307,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 16:05:00,1.16304,1.16306,1.16304,1.16306,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 16:06:00,1.16299,1.163,1.16299,1.163,"199    4
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 16:07:00,1.16307,1.16307,1.16307,1.16307,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 16:08:00,1.16299,1.163,1.16299,1.163,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 16:09:00,1.16294,1.16295,1.16294,1.16295,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 16:10:00,1.16303,1.16303,1.16303,1.16303,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 16:11:00,1.16316,1.16316,1.16316,1.16316,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 16:12:00,1.1630099999999999,1.1630099999999999,1.1630099999999999,1.1630099999999999,"199    1
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
+2026-05-26 16:13:00,1.1629,1.16291,1.1629,1.1629,"199    3
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
