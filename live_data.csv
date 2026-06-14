@@ -50462,3 +50462,6 @@ Name: real_volume, dtype: uint64",
 2026-06-11 16:26:00,1.15256,1.15256,1.15256,1.15256,"199    1
 Name: tick_volume, dtype: uint64","199    0
 Name: real_volume, dtype: uint64",
+2026-06-11 16:27:00,1.1525400000000001,1.1525400000000001,1.15253,1.15253,"199    2
+Name: tick_volume, dtype: uint64","199    0
+Name: real_volume, dtype: uint64",
