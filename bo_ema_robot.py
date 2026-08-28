@@ -144,7 +144,7 @@ def finish_trade(signal, entry_price, expiry_time, features):
         }]).to_csv(TRADE_LOG, mode='a', header=False, index=False)
 
         record_trade(features, win)
-        train_model()
+        train_model() 
 
         print(f"[{datetime.now().strftime('%H:%M:%S')}] RESULT: {'WIN' if win else 'LOSS'} | {profit}")
 
